@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Somparka Enterprises</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap"
+        rel="stylesheet">
+
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .nav-blur {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .slide-up {
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .slide-right {
+            animation: slideRight 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideRight {
+            from {
+                transform: translateX(100%);
+            }
+
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        .loader {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #6366f1;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800">
+
+    <!-- CONFIGURATION -->
+    <script>
+        const CONFIG = {
+            PHONE_NUMBER: "919332265553",
+            UPI_ID: "9332265553-3@ybl",
+            API_KEY: "",
+
+            // --- CHANGE LOGO AND BANNER HERE ---
+            LOGO_URL: "logo.jpg",
+            SHOP_BANNER_URL: "https://images.unsplash.com/photo-1604719312566-b7e677c66821?q=80&w=1200&auto=format&fit=crop",
+
+            MAP_URL: "https://maps.google.com/maps?q=23.7852071,87.0728013&hl=es;z=14&output=embed",
+            QR_CODE_URL: "payment-qr.jpg"
+        };
+    </script>
+
+    <!-- NAVBAR -->
+    <nav id="navbar" class="fixed w-full z-50 border-b border-slate-100 bg-white py-3 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+            <div class="flex items-center space-x-3 relative z-20">
+                <img id="nav-logo" src="" alt="Logo"
+                    class="w-20 h-20 rounded-full border-2 border-slate-100 object-cover shadow-sm">
+                <div>
+                    <span
+                        class="font-extrabold text-xl text-blue-600 italic block leading-none tracking-tight">Samparka</span>
+                    <span class="text-[10px] uppercase text-slate-500 font-bold tracking-widest">Enterprises</span>
+                </div>
+            </div>
+
+            <!-- CENTERED TAGLINES (Desktop) -->
+            <div
+                class="hidden lg:flex flex-col items-center absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full text-center pointer-events-none">
+                <p class="text-sm font-bold text-slate-800 tracking-wide drop-shadow-sm">
+                    "পুস্তক মহল থেকে ডিজিটাল সেবা, এক ছাদের নিচে"
+                </p>
+                <p class="text-[10px] font-semibold text-blue-600 tracking-wider">
+                    সম্পর্ক এন্টারপ্রাইজ: প্রযুক্তি, যোগাযোগ ও জ্ঞানের এক অনন্য মেলবন্ধন।
+                </p>
+            </div>
+
+            <div class="hidden md:flex items-center space-x-6">
+                <button onclick="toggleCart()"
+                    class="flex items-center gap-2 font-semibold text-slate-700 hover:text-blue-600 transition-transform active:scale-95">
+                    <i data-lucide="shopping-cart" class="text-slate-800 w-5 h-5"></i>
+                    <span>Cart</span>
+                    <span id="desktop-cart-count"
+                        class="hidden bg-red-500 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full -ml-2 -mt-4 shadow-sm border border-white">0</span>
+                </button>
+            </div>
+
+            <div class="md:hidden flex items-center gap-4">
+                <button onclick="toggleCart()" class="relative">
+                    <i data-lucide="shopping-cart" class="text-slate-800 w-6 h-6"></i>
+                    <span id="mobile-cart-count"
+                        class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-[9px] w-4 h-4 flex items-center justify-center rounded-full">0</span>
+                </button>
+                <button onclick="toggleMenu()"><i data-lucide="menu" class="text-slate-800 w-6 h-6"></i></button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- SPACER for fixed navbar -->
+    <div class="h-20"></div>
+
+    <!-- INTRO / HERO HEADER -->
+    <section class="mb-4 px-4 pt-6">
+        <div
+            class="max-w-7xl mx-auto rounded-3xl bg-gradient-to-r from-slate-900 to-slate-800 text-white p-8 md:p-12 relative overflow-hidden shadow-2xl shadow-slate-200 text-center">
+            <!-- Decorative Background Elements -->
+            <div
+                class="absolute top-0 right-0 w-64 h-64 bg-blue-500 rounded-full blur-3xl opacity-20 -mr-16 -mt-16 animate-pulse">
+            </div>
+            <div
+                class="absolute bottom-0 left-0 w-48 h-48 bg-purple-500 rounded-full blur-3xl opacity-20 -ml-10 -mb-10">
+            </div>
+
+            <div class="relative z-10 space-y-4">
+                <div class="inline-block animate-bounce">
+                    <span
+                        class="bg-white/10 backdrop-blur-md border border-white/20 px-4 py-1.5 rounded-full text-xs font-bold text-yellow-300 tracking-wider shadow-sm">
+                        ✨ Smart Choices for Smart Users.
+                    </span>
+                </div>
+
+                <h1 class="text-3xl md:text-5xl font-black tracking-tight leading-tight">
+                    <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-200 via-white to-purple-200">
+                        Education, Stationery, Tech<br class="hidden md:block" /> & Insurance Hub
+                    </span>
+                </h1>
+
+                <p class="text-slate-300 font-medium text-sm md:text-lg max-w-2xl mx-auto leading-relaxed">
+                    Your one stop Destination for Education Supplies, Gaming, Accessories, Gifts and Insurances.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 1. INSURANCE SECTION -->
+    <section id="insurance" class="py-6 px-4">
+        <div
+            class="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl p-6 border border-blue-50 ring-1 ring-blue-100 slide-up">
+            <div class="flex items-center gap-4 mb-6 pb-4 border-b border-slate-100">
+                <div class="bg-blue-600 p-3 rounded-xl text-white shadow-lg shadow-blue-200 animate-pulse">
+                    <i data-lucide="shield-check" class="w-8 h-8"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-black text-slate-900 tracking-tight">Motor Insurance</h2>
+                    <p class="text-sm text-blue-600 font-bold bg-blue-50 px-2 py-0.5 rounded-md inline-block mt-1">
+                        Instant Quote</p>
+                </div>
+            </div>
+            <form onsubmit="handleInsuranceSubmit(event)" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="md:col-span-2">
+                        <label class="text-xs font-bold text-slate-500 uppercase ml-1">Insurance Type</label>
+                        <input type="text" value="Motor Insurance" disabled
+                            class="w-full p-3 bg-slate-100 border border-slate-200 rounded-lg text-sm font-bold text-slate-500 cursor-not-allowed">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-slate-500 uppercase ml-1">Full Name</label>
+                        <input type="text" id="ins-name"
+                            class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                            required>
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-slate-500 uppercase ml-1">Date of Birth</label>
+                        <input type="date" id="ins-dob"
+                            class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                            required>
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-slate-500 uppercase ml-1">Vehicle Reg No.</label>
+                        <input type="text" id="ins-reg"
+                            class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg text-sm uppercase focus:ring-2 focus:ring-blue-500 outline-none"
+                            required>
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-slate-500 uppercase ml-1">PAN Number</label>
+                        <input type="text" id="ins-pan"
+                            class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg text-sm uppercase focus:ring-2 focus:ring-blue-500 outline-none"
+                            required>
+                    </div>
+                </div>
+                <div
+                    class="flex items-center gap-4 bg-gradient-to-r from-blue-50 to-white p-4 rounded-xl border border-blue-100">
+                    <div
+                        class="bg-white p-2 rounded-lg shadow-sm border border-slate-100 w-48 h-48 flex items-center justify-center overflow-hidden shrink-0">
+                        <img id="upi-qr" src="" alt="UPI QR" class="w-full h-full object-contain">
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Pay Premium to</p>
+                        <p class="text-sm font-bold text-slate-800 font-mono bg-white px-2 py-1 rounded border border-slate-100 inline-block mt-1 select-all"
+                            id="upi-display"></p>
+                    </div>
+                </div>
+                <p class="text-xs font-bold text-slate-500 text-center mb-3 italic">"SEND REQUIRED DETAILS, I WILL
+                    UPDATE FURTHER"</p>
+                <button type="submit"
+                    class="w-full bg-blue-600 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-200 hover:shadow-blue-300 transition-all flex justify-center items-center gap-2">
+                    Send Request to WhatsApp <i data-lucide="send" class="w-4 h-4"></i>
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- 2. SPECIAL REQUEST SECTION -->
+    <section id="special-request" class="py-8 px-4">
+        <div class="max-w-3xl mx-auto">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-purple-100 rounded-bl-full -mr-16 -mt-16 opacity-50">
+                </div>
+                <div class="flex items-center gap-3 mb-6 relative z-10">
+                    <div class="bg-purple-100 p-3 rounded-full text-purple-600"><i data-lucide="package"
+                            class="w-6 h-6"></i></div>
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-lg">Special Order</h3>
+                        <p class="text-xs text-slate-500">Can't find it? We'll get it for you.</p>
+                    </div>
+                </div>
+                <div class="space-y-4 relative z-10">
+                    <input type="text" id="req-item" placeholder="Item Name (e.g. Class 10 Physics Book)"
+                        class="w-full border-b-2 border-slate-100 p-3 bg-transparent focus:border-purple-500 outline-none text-sm transition-colors">
+                    <div class="flex gap-4">
+                        <input type="number" id="req-qty" placeholder="Qty"
+                            class="w-24 border-b-2 border-slate-100 p-3 bg-transparent focus:border-purple-500 outline-none text-sm">
+                        <select id="req-urgency"
+                            class="flex-1 border-b-2 border-slate-100 p-3 bg-transparent focus:border-purple-500 outline-none text-sm text-slate-600">
+                            <option>Standard Delivery</option>
+                            <option>Urgent</option>
+                        </select>
+                    </div>
+                    <div class="relative">
+                        <textarea id="req-notes" placeholder="Additional details..."
+                            class="w-full border border-slate-200 p-3 rounded-xl text-sm bg-slate-50 focus:bg-white focus:ring-2 focus:ring-purple-200 outline-none"
+                            rows="2"></textarea>
+                        <button onclick="handleRefineNote()" id="ai-polish-btn"
+                            class="absolute right-2 bottom-3 text-[10px] font-bold bg-white border border-purple-100 text-purple-600 px-3 py-1.5 rounded-full hover:bg-purple-50 flex items-center gap-1 shadow-sm transition-all">
+                            <i data-lucide="wand-2" class="w-3 h-3"></i> AI Polish
+                        </button>
+                    </div>
+                    <button onclick="handleBookRequestSubmit()"
+                        class="w-full bg-slate-900 text-white py-3 rounded-xl font-bold text-sm hover:bg-slate-800 transition-colors">Submit
+                        Order</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. BILL PAY SECTION -->
+    <section id="bill-pay" class="py-8 px-4">
+        <div
+            class="max-w-3xl mx-auto bg-gradient-to-br from-orange-50 to-white rounded-2xl shadow-sm border border-orange-100 p-6">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="bg-orange-500 text-white p-2 rounded-lg shadow-md shadow-orange-200"><i data-lucide="zap"
+                        class="w-6 h-6"></i></div>
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">Bill Payment</h2>
+                    <p class="text-xs text-orange-600 font-medium">Electricity & Utilities</p>
+                </div>
+            </div>
+            <form onsubmit="handleBillPaySubmit(event)" class="space-y-4">
+                <div class="p-4 bg-white rounded-xl border border-orange-100 shadow-sm">
+                    <label class="block text-xs font-bold text-slate-400 mb-1 uppercase">Service Provider</label>
+                    <div class="font-bold text-slate-800">West Bengal Electricity Service Provider</div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1 ml-1">Consumer ID</label>
+                        <input type="text" id="bill-id" placeholder="Enter Consumer ID"
+                            class="w-full p-3 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-orange-500 outline-none"
+                            required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1 ml-1">Amount (₹)</label>
+                        <input type="number" id="bill-amount" placeholder="0.00"
+                            class="w-full p-3 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-orange-500 outline-none"
+                            required>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4 bg-orange-50 p-4 rounded-xl border border-orange-100 mb-4">
+                    <div class="w-48 h-48 bg-white p-1 rounded-lg border border-orange-200 overflow-hidden shrink-0">
+                        <img id="bill-qr" src="" class="w-full h-full object-contain">
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-slate-500 uppercase">Scan to Pay</p>
+                        <p class="text-sm font-bold text-slate-800 font-mono select-all" id="bill-upi"></p>
+                    </div>
+                </div>
+                <div class="bg-white/50 p-3 rounded-lg text-xs text-slate-500 flex gap-2 border border-orange-50">
+                    <i data-lucide="info" class="w-4 h-4 shrink-0 text-orange-400"></i>
+                    <p>Processing/Late fees may apply. Payment link will be sent to WhatsApp.</p>
+                </div>
+                <p class="text-xs font-bold text-slate-500 text-center mb-3 italic">"SEND REQUIRED DETAILS, I WILL
+                    UPDATE FURTHER"</p>
+                <button type="submit"
+                    class="w-full bg-orange-500 text-white font-bold py-3.5 rounded-xl hover:bg-orange-600 shadow-lg shadow-orange-200 transition-all flex justify-center items-center gap-2">
+                    Submit Request to Pay Bill <i data-lucide="zap" class="w-4 h-4 fill-current"></i>
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- CATEGORY NAVIGATION -->
+    <div
+        class="py-6 bg-gradient-to-b from-white to-slate-50 border-t border-b border-slate-100 sticky top-16 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 overflow-x-auto no-scrollbar">
+            <div id="category-list" class="flex justify-between md:justify-center gap-6 min-w-max pb-2"></div>
+        </div>
+    </div>
+
+    <!-- 4. HERO BANNER -->
+    <div class="py-8 px-4 max-w-7xl mx-auto">
+        <div class="relative rounded-2xl overflow-hidden shadow-xl h-64 md:h-80 group bg-slate-900">
+            <div class="absolute inset-0 flex flex-col justify-center p-8 md:p-16">
+                <div class="relative z-10">
+                    <span
+                        class="bg-yellow-400 text-slate-900 text-xs font-black px-2 py-1 rounded mb-4 inline-block">LIVE
+                        NOW</span>
+                    <h2 class="text-4xl md:text-5xl font-black mb-2 text-white tracking-tight drop-shadow-lg">Big Saving
+                        Days</h2>
+                    <p class="mb-6 text-slate-200 font-medium text-lg max-w-md drop-shadow-md">Unbeatable prices on
+                        Electronics, Stationery & Gifts. Only at Samparka.</p>
+                    <a href="#sec-mobiles"
+                        class="bg-white text-slate-900 px-8 py-3 rounded-full font-bold shadow-lg hover:bg-slate-100 transition-colors inline-flex items-center gap-2">
+                        Explore Store <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. AI GIFT IDEAS -->
+    <section id="gift-ideas" class="py-8 px-4">
+        <div class="max-w-3xl mx-auto">
+            <div class="border border-pink-200 rounded-2xl p-1 bg-gradient-to-r from-pink-50 to-purple-50 shadow-sm">
+                <div class="bg-white rounded-xl p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="bg-gradient-to-br from-pink-500 to-purple-600 p-2 rounded-lg text-white shadow-md">
+                            <i data-lucide="sparkles" class="w-5 h-5"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-900">AI Gift Genius</h3>
+                    </div>
+                    <textarea id="ai-gift-prompt"
+                        class="w-full bg-slate-50 border border-slate-200 p-4 rounded-xl text-sm mb-4 focus:ring-2 focus:ring-pink-400 outline-none"
+                        rows="2" placeholder="e.g. Birthday gift for 10yr old boy who likes drawing..."></textarea>
+                    <button onclick="handleGiftIdeas()" id="ai-gift-btn"
+                        class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 rounded-xl font-bold text-sm transition-all flex justify-center gap-2">
+                        Generate Gift Ideas <i data-lucide="wand-2" class="w-4 h-4"></i>
+                    </button>
+                    <div id="ai-gift-result"
+                        class="hidden mt-4 bg-pink-50 p-4 rounded-xl text-sm text-slate-800 whitespace-pre-wrap border border-pink-100 fade-in">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. STORE PRODUCTS SECTIONS -->
+    <section id="sec-mobiles" class="py-8 max-w-7xl mx-auto px-4 scroll-mt-32">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold text-slate-900 flex items-center gap-2">Mobiles <div
+                    class="bg-blue-100 text-blue-700 p-1 rounded-full"><i data-lucide="smartphone" class="w-4 h-4"></i>
+                </div>
+            </h2>
+        </div>
+        <div id="grid-mobiles" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-8"></div>
+    </section>
+
+    <section id="sec-stationery" class="py-8 max-w-7xl mx-auto px-4 scroll-mt-32 border-t border-slate-100">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold text-slate-900 flex items-center gap-2">Stationery <div
+                    class="bg-blue-100 text-blue-700 p-1 rounded-full"><i data-lucide="book-open" class="w-4 h-4"></i>
+                </div>
+            </h2>
+        </div>
+        <div id="grid-stationery" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-8"></div>
+    </section>
+
+    <section id="sec-electronics" class="py-8 max-w-7xl mx-auto px-4 scroll-mt-32 border-t border-slate-100">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold text-slate-900 flex items-center gap-2">Electronics <div
+                    class="bg-purple-100 text-purple-700 p-1 rounded-full"><i data-lucide="monitor" class="w-4 h-4"></i>
+                </div>
+            </h2>
+        </div>
+        <div id="grid-electronics" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-8"></div>
+    </section>
+
+    <section id="sec-gifting" class="py-8 max-w-7xl mx-auto px-4 scroll-mt-32 border-t border-slate-100">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold text-slate-900 flex items-center gap-2">Gifts <div
+                    class="bg-pink-100 text-pink-700 p-1 rounded-full"><i data-lucide="gift" class="w-4 h-4"></i></div>
+            </h2>
+        </div>
+        <div id="grid-gifting" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-8"></div>
+    </section>
+
+    <!-- MAP SECTION -->
+    <section class="py-12 bg-white border-t border-slate-100">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="bg-slate-50 rounded-2xl p-2 border border-slate-200">
+                <h2 class="text-lg font-bold text-slate-800 p-4 flex items-center gap-2"><i data-lucide="map-pin"
+                        class="text-red-500 w-5 h-5"></i> Visit Samparka Enterprises</h2>
+                <div class="rounded-xl overflow-hidden h-80 w-full shadow-inner bg-slate-200">
+                    <iframe id="store-map" src="" width="100%" height="100%" style="border:0" allowfullscreen=""
+                        loading="lazy" class="grayscale hover:grayscale-0 transition-all duration-500"></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-400 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <div class="flex justify-center items-center gap-2 mb-4">
+                <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center"><i data-lucide="store"
+                        class="text-white w-4 h-4"></i></div>
+                <span class="font-extrabold text-white text-xl italic">Samparka</span>
+            </div>
+            <p class="text-sm mb-2">Proprietor: Bidyapati Halder</p>
+            <p class="text-xs text-slate-500">Churulia, West Bengal</p>
+            <p class="text-[10px] text-slate-600 mt-8">© 2024 Samparka Enterprises. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- CART SIDEBAR -->
+    <div id="cart-sidebar" class="fixed inset-0 z-[110] flex justify-end hidden">
+        <div class="absolute inset-0 bg-black/30 backdrop-blur-sm" onclick="toggleCart()"></div>
+        <div class="bg-white w-full max-w-sm h-full relative z-10 shadow-2xl flex flex-col slide-right">
+            <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-white">
+                <h3 class="font-black text-xl text-slate-900">Your Cart</h3>
+                <button onclick="toggleCart()" class="p-2 hover:bg-slate-100 rounded-full transition-colors"><i
+                        data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <div id="cart-items" class="flex-1 overflow-y-auto p-5 space-y-6"></div>
+            <div class="p-6 border-t border-slate-100 bg-slate-50">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-sm font-medium text-slate-500">Total Items</span>
+                    <span id="cart-total-qty" class="font-bold text-slate-900">0</span>
+                </div>
+                <button onclick="handleCartCheckout()" id="checkout-btn" disabled
+                    class="w-full bg-slate-900 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all">Checkout
+                    via WhatsApp</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PRODUCT DETAIL MODAL -->
+    <div id="product-modal"
+        class="fixed inset-0 z-[100] flex items-end md:items-center justify-center bg-black/60 backdrop-blur-md hidden">
+        <div id="modal-content"
+            class="bg-white w-full md:max-w-4xl h-[90vh] md:h-auto md:max-h-[90vh] md:rounded-3xl rounded-t-3xl overflow-hidden shadow-2xl relative flex flex-col md:flex-row slide-up">
+            <button onclick="closeModal()"
+                class="absolute top-4 right-4 z-20 bg-white/80 backdrop-blur-md p-2 rounded-full hover:bg-slate-100 transition-colors"><i
+                    data-lucide="x" class="w-5 h-5"></i></button>
+            <div class="md:w-1/2 p-8 overflow-y-auto bg-white flex flex-col w-full">
+                <div class="mb-auto">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span
+                            class="bg-slate-900 text-white text-[10px] font-bold px-2 py-1 rounded tracking-wider uppercase">Official
+                            Stock</span>
+                        <span id="modal-category"
+                            class="text-xs font-bold text-slate-400 uppercase tracking-widest"></span>
+                    </div>
+                    <h2 id="modal-title" class="text-3xl font-black text-slate-900 mb-2 leading-tight"></h2>
+                    <p id="modal-price" class="text-xl font-bold text-green-600 mb-6"></p>
+                    <div id="modal-variants-container"
+                        class="hidden mb-6 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                        <h4 class="text-xs font-bold text-slate-500 uppercase mb-3 flex items-center gap-2"><i
+                                data-lucide="layers" class="w-3 h-3"></i> Available Options</h4>
+                        <div id="modal-variants" class="grid grid-cols-2 gap-2"></div>
+                    </div>
+                    <div class="prose prose-sm text-slate-500 mb-8">
+                        <p id="modal-desc"></p>
+                    </div>
+                </div>
+                <div class="flex gap-3 pt-4 border-t border-slate-100">
+                    <button onclick="addToCartAndClose()"
+                        class="flex-1 bg-white border-2 border-slate-200 text-slate-900 font-bold py-3.5 rounded-xl hover:border-slate-900 transition-colors">Add
+                        to Cart</button>
+                    <button onclick="buyNow()"
+                        class="flex-[1.5] bg-blue-600 text-white font-bold py-3.5 rounded-xl hover:bg-blue-700 shadow-lg shadow-blue-200 transition-colors">Buy
+                        Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MOBILE MENU -->
+    <div id="mobile-menu" class="fixed inset-0 z-40 bg-white/95 backdrop-blur-xl pt-24 px-8 space-y-8 slide-up hidden">
+        <button onclick="toggleMenu()" class="absolute top-6 right-6 p-2 bg-slate-100 rounded-full"><i data-lucide="x"
+                class="w-6 h-6"></i></button>
+        <div class="space-y-6">
+            <a href="#insurance" onclick="toggleMenu()" class="block text-2xl font-black text-slate-900">Insurance</a>
+            <a href="#special-request" onclick="toggleMenu()" class="block text-2xl font-black text-slate-900">Special
+                Order</a>
+            <a href="#bill-pay" onclick="toggleMenu()" class="block text-2xl font-black text-slate-900">Bill Pay</a>
+            <a href="#sec-mobiles" onclick="toggleMenu()" class="block text-2xl font-black text-slate-900">Store
+                Items</a>
+        </div>
+        <div class="pt-8 border-t border-slate-200">
+            <p class="text-sm text-slate-500">Need help?</p>
+            <p class="text-xl font-bold text-blue-600" id="menu-phone"></p>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Init Config
+        document.getElementById('nav-logo').src = CONFIG.LOGO_URL;
+        // document.getElementById('shop-banner').src = CONFIG.SHOP_BANNER_URL; // REMOVED
+        document.getElementById('store-map').src = CONFIG.MAP_URL;
+        document.getElementById('upi-display').textContent = CONFIG.UPI_ID;
+        document.getElementById('upi-qr').src = CONFIG.QR_CODE_URL;
+        document.getElementById('bill-qr').src = CONFIG.QR_CODE_URL;
+        document.getElementById('bill-upi').textContent = CONFIG.UPI_ID;
+        document.getElementById('menu-phone').textContent = CONFIG.PHONE_NUMBER;
+
+        // Data & State
+        const categoryNav = [
+            { id: 'sec-mobiles', label: 'Mobiles', icon: 'smartphone' },
+            { id: 'sec-stationery', label: 'Stationery', icon: 'book-open' },
+            { id: 'sec-gifting', label: 'Gifts', icon: 'gift' },
+            { id: 'sec-electronics', label: 'Electronics', icon: 'monitor' }
+        ];
+
+        const inventory = [
+            // Mobiles
+            { id: 101, name: 'iPhone', category: 'Mobiles', price: 'Exclusive Awards', tagLine: 'Flagship Deal', image: "", description: 'Latest Apple iPhone series.', stock: 'In Stock', variants: [{ name: '128GB', qty: 2 }, { name: '256GB', qty: 1 }] },
+            { id: 102, name: 'Google Pixel', category: 'Mobiles', price: 'Exclusive Awards', tagLine: 'Smart Camera', image: "", description: 'Pixel perfect camera.', stock: 'In Stock', variants: [{ name: 'Standard', qty: 3 }] },
+            { id: 103, name: 'Samsung Galaxy', category: 'Mobiles', price: 'Exclusive Awards', tagLine: 'Best Display', image: "", description: 'Galaxy S Series.', stock: 'High Stock', variants: [{ name: 'S-Series', qty: 5 }] },
+            { id: 104, name: 'Vivo', category: 'Mobiles', price: 'Exclusive Awards', tagLine: 'Selfie Expert', image: "", description: 'Vivo V Series.', stock: 'Available', variants: [{ name: 'V-Series', qty: 8 }] },
+            // Stationery
+            { id: 1, name: 'School/College Books', category: 'Stationery', price: 'MRP', tagLine: 'All Standards', image: "", description: 'Textbooks for classes 1-12.', stock: 'Available' },
+            { id: 2, name: 'Copies (Notebooks)', category: 'Stationery', price: 'Starts ₹10', tagLine: 'High Quality', image: "", description: 'Rough & Fair notebooks.', stock: 'High Stock' },
+            // Electronics
+            { id: 20, name: 'Mobile Accessories', category: 'Electronics', price: 'Best Prices', tagLine: 'Essentials', image: "", description: 'Chargers & Cables.', stock: 'High Stock' },
+            // Gifts
+            { id: 30, name: 'Uno & Games', category: 'Gifting', price: 'Fun', tagLine: 'Play', image: "", description: 'Card games and board games.', stock: 'In Stock' }
+        ];
+
+        let cart = [];
+        let selectedProduct = null;
+
+        // Render Functions
+        function renderCategoryNav() {
+            document.getElementById('category-list').innerHTML = categoryNav.map(cat => `
+                <button onclick="scrollToSection('${cat.id}')" class="flex flex-col items-center gap-2 group min-w-[70px] opacity-60 hover:opacity-100 transition-all">
+                    <div class="w-14 h-14 rounded-full flex items-center justify-center shadow-sm bg-white text-slate-600 border border-slate-200 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                        <i data-lucide="${cat.icon}" class="w-5 h-5"></i>
+                    </div>
+                    <span class="text-xs font-bold text-slate-600 group-hover:text-blue-600">${cat.label}</span>
+                </button>
+            `).join('') + `
+            <div onclick="scrollToSection('special-request')" class="flex flex-col items-center gap-2 opacity-60 cursor-pointer hover:opacity-100">
+               <div class="w-14 h-14 bg-white border border-slate-200 rounded-full flex items-center justify-center group-hover:bg-blue-600"><i data-lucide="package" class="w-5 h-5 text-slate-600"></i></div>
+               <span class="text-xs font-bold text-slate-600">Orders</span>
+            </div>`;
+            lucide.createIcons();
+        }
+
+        function scrollToSection(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
+
+        function renderProductSection(categoryId, sectionId) {
+            const items = inventory.filter(item => item.category === categoryId);
+            document.getElementById(sectionId).innerHTML = items.map(item => `
+                <div onclick="openProductModal(${item.id})" class="group cursor-pointer">
+                    <div class="relative rounded-2xl overflow-hidden bg-slate-100 p-2 mb-3 shadow-sm group-hover:shadow-md transition-all">
+                        <div class="bg-white/90 backdrop-blur-sm px-2 py-1 rounded text-[10px] font-bold text-slate-700 shadow-sm inline-block">${item.category}</div>
+                    </div>
+                    <div class="px-1">
+                        <h3 class="font-bold text-slate-900 text-sm leading-tight mb-1 group-hover:text-blue-600">${item.name}</h3>
+                        <div class="flex items-center justify-between">
+                            <p class="text-xs font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded">${item.tagLine || 'In Stock'}</p>
+                            <p class="text-sm font-bold text-slate-500">${item.price}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderAllProducts() {
+            renderProductSection('Mobiles', 'grid-mobiles');
+            renderProductSection('Stationery', 'grid-stationery');
+            renderProductSection('Electronics', 'grid-electronics');
+            renderProductSection('Gifting', 'grid-gifting');
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cart-items');
+            const totalQty = cart.reduce((a, b) => a + b.qty, 0);
+
+            document.getElementById('mobile-cart-count').textContent = totalQty;
+            document.getElementById('desktop-cart-count').textContent = totalQty;
+            document.getElementById('mobile-cart-count').classList.toggle('hidden', totalQty === 0);
+            document.getElementById('desktop-cart-count').classList.toggle('hidden', totalQty === 0);
+            document.getElementById('cart-total-qty').textContent = totalQty;
+
+            const btn = document.getElementById('checkout-btn');
+            btn.disabled = totalQty === 0;
+            btn.classList.toggle('opacity-50', totalQty === 0);
+
+            if (cart.length === 0) {
+                container.innerHTML = `<div class="flex flex-col items-center justify-center h-full text-slate-400 space-y-4"><i data-lucide="shopping-bag" class="w-12 h-12 opacity-20"></i><p>Your cart is empty.</p></div>`;
+            } else {
+                container.innerHTML = cart.map(item => `
+                    <div class="flex gap-4">
+                        <div class="flex-1">
+                            <h4 class="font-bold text-sm line-clamp-1">${item.name}</h4>
+                            <div class="flex items-center justify-between mt-2">
+                                <div class="flex items-center gap-2 bg-slate-50 rounded p-1">
+                                    <button onclick="updateQty(${item.id}, -1)" class="w-5 h-5 flex items-center justify-center bg-white shadow-sm"><i data-lucide="minus" class="w-3 h-3"></i></button>
+                                    <span class="text-xs font-bold w-4 text-center">${item.qty}</span>
+                                    <button onclick="updateQty(${item.id}, 1)" class="w-5 h-5 flex items-center justify-center bg-white shadow-sm"><i data-lucide="plus" class="w-3 h-3"></i></button>
+                                </div>
+                                <button onclick="removeFromCart(${item.id})" class="text-slate-300 hover:text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            lucide.createIcons();
+        }
+
+        // Core Functions
+        function toggleCart() { document.getElementById('cart-sidebar').classList.toggle('hidden'); }
+        function toggleMenu() { document.getElementById('mobile-menu').classList.toggle('hidden'); }
+
+        function openProductModal(id) {
+            selectedProduct = inventory.find(i => i.id === id);
+            if (!selectedProduct) return;
+            // document.getElementById('modal-img').src = selectedProduct.image; // REMOVED
+            document.getElementById('modal-category').textContent = selectedProduct.category;
+            document.getElementById('modal-title').textContent = selectedProduct.name;
+            document.getElementById('modal-price').textContent = selectedProduct.price;
+            document.getElementById('modal-desc').textContent = selectedProduct.description;
+            // Variants logic simplified for brevity
+            document.getElementById('product-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('product-modal').classList.add('hidden');
+            selectedProduct = null;
+        }
+
+        function addToCart(item) {
+            const existing = cart.find(i => i.id === item.id);
+            existing ? existing.qty++ : cart.push({ ...item, qty: 1 });
+            renderCart();
+        }
+
+        function addToCartAndClose() {
+            if (selectedProduct) { addToCart(selectedProduct); closeModal(); }
+        }
+
+        function buyNow() {
+            if (selectedProduct) { addToCart(selectedProduct); closeModal(); toggleCart(); }
+        }
+
+        function updateQty(id, delta) {
+            const item = cart.find(i => i.id === id);
+            if (item) { item.qty = Math.max(1, item.qty + delta); renderCart(); }
+        }
+
+        function removeFromCart(id) {
+            cart = cart.filter(i => i.id !== id);
+            renderCart();
+        }
+
+        // Form Handlers
+        function handleCartCheckout() {
+            if (cart.length === 0) return;
+            let message = "*New Order Request (Samparka Enterprises)*\n\nI would like to order:\n------------------\n";
+            cart.forEach((item, index) => { message += `${index + 1}. ${item.name} (x${item.qty})\n`; });
+            message += "------------------\n\nPlease confirm total price.";
+            window.open(`https://wa.me/${CONFIG.PHONE_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
+        }
+
+        function handleInsuranceSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('ins-name').value;
+            const dob = document.getElementById('ins-dob').value;
+            const reg = document.getElementById('ins-reg').value;
+            const pan = document.getElementById('ins-pan').value;
+            const message = `*New Motor Insurance Quote*\n\nType: Motor Insurance\nFull Name: ${name}\nDOB: ${dob}\nReg No: ${reg}\nPAN: ${pan}`;
+            window.open(`https://wa.me/${CONFIG.PHONE_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
+        }
+
+        function handleBookRequestSubmit() {
+            const item = document.getElementById('req-item').value;
+            const qty = document.getElementById('req-qty').value;
+            const urgency = document.getElementById('req-urgency').value;
+            const notes = document.getElementById('req-notes').value;
+            const message = `*Order Request (Samparka)*\n\nItem: ${item}\nQty: ${qty}\nUrgency: ${urgency}\nNotes: ${notes}`;
+            window.open(`https://wa.me/${CONFIG.PHONE_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
+        }
+
+        function handleBillPaySubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('bill-id').value;
+            const amt = document.getElementById('bill-amount').value;
+            const message = `*Electric Bill Payment Request*\n\nProvider: West Bengal Electricity Service Provider\nConsumer ID: ${id}\nAmount: ₹${amt}\n\n*Action:* Initiate Payment via UPI: ${CONFIG.UPI_ID}`;
+            window.open(`https://wa.me/${CONFIG.PHONE_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
+        }
+
+        function handleRefineNote() {
+            const btn = document.getElementById('ai-polish-btn');
+            const noteArea = document.getElementById('req-notes');
+            if (!noteArea.value) return alert('Please write a note first!');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '✨ Polishing...';
+            btn.disabled = true;
+            setTimeout(() => {
+                noteArea.value = "Please kindly ensure " + noteArea.value + " if possible. Thank you!";
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }, 1000);
+        }
+
+        function handleGiftIdeas() {
+            const prompt = document.getElementById('ai-gift-prompt').value;
+            const resBox = document.getElementById('ai-gift-result');
+            const btn = document.getElementById('ai-gift-btn');
+            if (!prompt) return alert('Please describe who the gift is for!');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '🤖 Thinking...';
+            btn.disabled = true;
+            setTimeout(() => {
+                const ideas = ["1. Custom Photo Frame", "2. Personalized Mug set", "3. Executive Diary & Pen Combo"];
+                resBox.innerHTML = `<strong>AI Suggestions:</strong>\n\n${ideas.join('\n')}\n\n<em>Visit store to buy these!</em>`;
+                resBox.classList.remove('hidden');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }, 1500);
+        }
+
+        // Init Calls
+        renderCategoryNav();
+        renderAllProducts();
+        renderCart();
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>
